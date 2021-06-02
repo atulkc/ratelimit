@@ -1,13 +1,14 @@
 package runner
 
 import (
-	"github.com/envoyproxy/ratelimit/src/metrics"
 	"io"
 	"math/rand"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/envoyproxy/ratelimit/src/metrics"
 
 	stats "github.com/lyft/gostats"
 
@@ -68,6 +69,23 @@ func createLimiter(srv server.Server, s settings.Settings, localCache *freecache
 	}
 }
 
+// CUSTOMIZE
+// Hook to add default appid field to log messages
+type ApplicationIdFieldHook struct {
+	GetValue func() string
+}
+
+func (h *ApplicationIdFieldHook) Levels() []logger.Level {
+	return logger.AllLevels
+}
+
+func (h *ApplicationIdFieldHook) Fire(e *logger.Entry) error {
+	e.Data["appid"] = h.GetValue()
+	return nil
+}
+
+// CUSTOMIZE
+
 func (runner *Runner) Run() {
 	s := runner.settings
 
@@ -86,6 +104,14 @@ func (runner *Runner) Run() {
 			},
 		})
 	}
+	// CUSTOMIZE
+	// Setup hook to add applicationId as one of the default fields
+	logger.AddHook(&ApplicationIdFieldHook{
+		GetValue: func() string {
+			return s.ApplicationId
+		},
+	})
+	// CUSTOMIZE
 
 	var localCache *freecache.Cache
 	if s.LocalCacheSizeInBytes != 0 {

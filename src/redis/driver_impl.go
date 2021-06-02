@@ -60,7 +60,13 @@ func NewClientImpl(scope stats.Scope, useTls bool, auth string, redisType string
 		var dialOpts []radix.DialOpt
 
 		if useTls {
-			dialOpts = append(dialOpts, radix.DialUseTLS(&tls.Config{}))
+			// CUSTOMIZE
+			// Heroku currently doesn't provide a way to verify their self-generated certificates so we
+			// need to skip the certificate verification.
+			dialOpts = append(dialOpts, radix.DialUseTLS(&tls.Config{
+				InsecureSkipVerify: true,
+			}))
+			// CUSTOMIZE
 		}
 
 		if auth != "" {

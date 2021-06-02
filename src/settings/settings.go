@@ -79,6 +79,11 @@ type Settings struct {
 	MemcacheMaxIdleConns int           `envconfig:"MEMCACHE_MAX_IDLE_CONNS" default:"2"`
 	MemcacheSrv          string        `envconfig:"MEMCACHE_SRV" default:""`
 	MemcacheSrvRefresh   time.Duration `envconfig:"MEMCACHE_SRV_REFRESH" default:"0"`
+
+	// CUSTOMIZE
+	// Application name to be used in logging
+	ApplicationId string `envconfig:"APPLICATION_NAME" default:"ratelimit"`
+	// CUSTOMIZE
 }
 
 type Option func(*Settings)
