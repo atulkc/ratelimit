@@ -48,6 +48,12 @@ type Settings struct {
 	RedisPoolSize   int    `envconfig:"REDIS_POOL_SIZE" default:"10"`
 	RedisAuth       string `envconfig:"REDIS_AUTH" default:""`
 	RedisTls        bool   `envconfig:"REDIS_TLS" default:"false"`
+	// CUSTOMIZE
+	// In Heroku redis certificates are self signed and with different CN than the hostname
+	// So we need an ability to skip cert verification when running in Heroku
+	RedisSkipCertVerification bool `envconfig:"REDIS_SKIP_CERT_VERIFICATION" default:"false"`
+	// CUSTOMIZE
+
 	// RedisPipelineWindow sets the duration after which internal pipelines will be flushed.
 	// If window is zero then implicit pipelining will be disabled. Radix use 150us for the
 	// default value, see https://github.com/mediocregopher/radix/blob/v3.5.1/pool.go#L278.

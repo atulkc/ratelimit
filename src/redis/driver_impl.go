@@ -53,7 +53,7 @@ func checkError(err error) {
 }
 
 func NewClientImpl(scope stats.Scope, useTls bool, auth string, redisType string, url string, poolSize int,
-	pipelineWindow time.Duration, pipelineLimit int) Client {
+	pipelineWindow time.Duration, pipelineLimit int, skipCertVerify bool) Client {
 	logger.Warnf("connecting to redis on %s with pool size %d", url, poolSize)
 
 	df := func(network, addr string) (radix.Conn, error) {
@@ -64,7 +64,7 @@ func NewClientImpl(scope stats.Scope, useTls bool, auth string, redisType string
 			// Heroku currently doesn't provide a way to verify their self-generated certificates so we
 			// need to skip the certificate verification.
 			dialOpts = append(dialOpts, radix.DialUseTLS(&tls.Config{
-				InsecureSkipVerify: true,
+				InsecureSkipVerify: skipCertVerify,
 			}))
 			// CUSTOMIZE
 		}

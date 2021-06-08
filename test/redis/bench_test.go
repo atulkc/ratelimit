@@ -41,7 +41,7 @@ func BenchmarkParallelDoLimit(b *testing.B) {
 	mkDoLimitBench := func(pipelineWindow time.Duration, pipelineLimit int) func(*testing.B) {
 		return func(b *testing.B) {
 			statsStore := stats.NewStore(stats.NewNullSink(), false)
-			client := redis.NewClientImpl(statsStore, false, "", "single", "127.0.0.1:6379", poolSize, pipelineWindow, pipelineLimit)
+			client := redis.NewClientImpl(statsStore, false, "", "single", "127.0.0.1:6379", poolSize, pipelineWindow, pipelineLimit, false)
 			defer client.Close()
 
 			cache := redis.NewFixedRateLimitCacheImpl(client, nil, utils.NewTimeSourceImpl(), rand.New(utils.NewLockedSource(time.Now().Unix())), 10, nil, 0.8, "")
